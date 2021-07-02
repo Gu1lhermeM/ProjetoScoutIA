@@ -13,6 +13,7 @@ import javax.swing.JTextField;
 public class PainelJogador extends JPanel implements ActionListener
 {
     public ArrayList<Jogador> listaDeJogadores;
+    private int index;
     
     public JLabel labelNomeJ;
     public JTextField caixaNomeJ;
@@ -33,22 +34,24 @@ public class PainelJogador extends JPanel implements ActionListener
     public JTextField caixaPeso;
     
     public JButton inserirJogador;
+    public JButton limparCampos;
     
     public JLabel jogadoresInseridos;
     public JComboBox comboJogador = new JComboBox();
 
     public PainelJogador()
     {
-        this.setSize(400, 300);
+        this.setSize(800, 400);
         this.setLayout(null);
         listaDeJogadores = new ArrayList<Jogador>();
        
-        comboJogador.setBounds(80, 230, 100, 20);
+        comboJogador.setBounds(80, 240, 100, 20);
         comboJogador.setVisible(true);
         this.add(comboJogador);
         comboJogador.addActionListener(this);
+        comboJogador.addItem("-");
 
-        labelNomeJ = new JLabel("Nome do novoJogador: ");
+        labelNomeJ = new JLabel("Nome do jogador: ");
         labelNomeJ.setBounds(0, 10, 120, 20);
         labelNomeJ.setVisible(true);
         this.add(labelNomeJ);
@@ -109,13 +112,19 @@ public class PainelJogador extends JPanel implements ActionListener
         this.add(caixaPeso);
         
         inserirJogador = new JButton("Inserir Jogador");
-        inserirJogador.setBounds(10, 200, 200, 20);
+        inserirJogador.setBounds(10, 200, 130, 20);
         inserirJogador.setVisible(true);
         this.add(inserirJogador);
         inserirJogador.addActionListener(this);
         
+        limparCampos = new JButton("Limpar");
+        limparCampos.setBounds(150, 200, 100, 20);
+        limparCampos.setVisible(true);
+        this.add(limparCampos);
+        limparCampos.addActionListener(this);
+        
         jogadoresInseridos = new JLabel("Jogadores: ");
-        jogadoresInseridos.setBounds(10, 230, 100, 20);
+        jogadoresInseridos.setBounds(10, 240, 100, 20);
         jogadoresInseridos.setVisible(true);
         this.add(jogadoresInseridos);
         
@@ -125,11 +134,19 @@ public class PainelJogador extends JPanel implements ActionListener
     
     public void atualizaCombo() {
         comboJogador.removeAll();
-        comboJogador.addItem("-");
         
-        for (int i=0; i < listaDeJogadores.size(); i++) {
-            comboJogador.addItem(listaDeJogadores.get(i).getNome());
-        }
+        // for (int i=0; i < listaDeJogadores.size(); i++) {
+        comboJogador.addItem(listaDeJogadores.get(index++).getNome());
+        // }
+    }
+    
+    public void limpar() {
+        caixaNomeJ.setText("");
+        caixaAltura.setText("");
+        caixaCamisa.setText("");
+        caixaIdade.setText("");
+        caixaPeso.setText("");
+        caixaSalario.setText("");
     }
             
     public void actionPerformed(ActionEvent e) {
@@ -138,9 +155,8 @@ public class PainelJogador extends JPanel implements ActionListener
             System.out.println("Pressionou o Botão \"Inserir Jogador\"");
 
             Jogador novoJogador = new Jogador();
+            
             novoJogador.setNome(caixaNomeJ.getText());
-            // comboJogador.addItem(novoJogador.getNome());
-
             novoJogador.setAltura(Integer.parseInt(caixaAltura.getText()));
             novoJogador.setCamisa(Integer.parseInt(caixaCamisa.getText()));
             novoJogador.setIdade(Integer.parseInt(caixaIdade.getText()));
@@ -149,15 +165,20 @@ public class PainelJogador extends JPanel implements ActionListener
 
             listaDeJogadores.add(novoJogador);
             atualizaCombo();
-        }
-        else if (e.getSource() == comboJogador) {
-            System.out.println("teste!");
+            
+            limpar();
+        } else if (e.getSource() == comboJogador) {
             if (comboJogador.getSelectedIndex() > 0)
             {
                 caixaNomeJ.setText(listaDeJogadores.get(comboJogador.getSelectedIndex()-1).getNome());
-                caixaNomeJ.setText("");
-                caixaAltura.setText("");
+                caixaAltura.setText(Integer.toString(listaDeJogadores.get(comboJogador.getSelectedIndex()-1).getAltura()));
+                caixaCamisa.setText(Integer.toString(listaDeJogadores.get(comboJogador.getSelectedIndex()-1).getCamisa()));
+                caixaIdade.setText(Integer.toString(listaDeJogadores.get(comboJogador.getSelectedIndex()-1).getIdade()));
+                caixaSalario.setText(Float.toString(listaDeJogadores.get(comboJogador.getSelectedIndex()-1).getSalario()));
+                caixaPeso.setText(Float.toString(listaDeJogadores.get(comboJogador.getSelectedIndex()-1).getPeso()));
             }
+        } else if (e.getSource() == limparCampos) {
+            limpar();
         }
 
         // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

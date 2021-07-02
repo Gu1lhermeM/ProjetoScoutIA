@@ -16,7 +16,7 @@ public class Jogador
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-	public int getaAltura() {
+	public int getAltura() {
 		return altura;
 	}
 	public void setAltura(int altura) {

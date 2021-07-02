@@ -10,11 +10,12 @@ import javax.swing.JTextField;
 import java.awt.List;
 
 import MO.Time;
+import java.util.ArrayList;
 
 public class PainelTime extends JPanel implements ActionListener
 {
-    public List listaDeTimes = new List();
-    private int i;
+    public ArrayList<Time> listaDeTimes;
+    private int index;
     
     public JLabel labelNomeT;
     public JTextField caixaNomeT;
@@ -32,19 +33,21 @@ public class PainelTime extends JPanel implements ActionListener
     public JTextField caixaGastos;
     
     public JButton inserirTime;
+    public JButton limparCampos;
     
     public JLabel timesInseridos;
     public JComboBox comboTime = new JComboBox();
     
     public PainelTime()
     {
-        this.setSize(400, 300);
+        this.setSize(800, 400);
         this.setLayout(null);
+        listaDeTimes = new ArrayList<Time>();
         
-        comboTime.setBounds(80, 230, 100, 20);
+        comboTime.setBounds(80, 240, 100, 20);
         comboTime.setVisible(true);
         this.add(comboTime);
-
+        comboTime.addActionListener(this);
         comboTime.addItem("-");
         
         labelNomeT = new JLabel("Nome do time: ");
@@ -98,28 +101,69 @@ public class PainelTime extends JPanel implements ActionListener
         this.add(caixaGastos);
         
         inserirTime = new JButton("Inserir Time");
-        inserirTime.setBounds(10, 200, 200, 20);
+        inserirTime.setBounds(10, 200, 130, 20);
         inserirTime.setVisible(true);
         this.add(inserirTime);
         inserirTime.addActionListener(this);
         
+        limparCampos = new JButton("Limpar");
+        limparCampos.setBounds(150, 200, 100, 20);
+        limparCampos.setVisible(true);
+        this.add(limparCampos);
+        limparCampos.addActionListener(this);
+        
         timesInseridos = new JLabel("Times: ");
-        timesInseridos.setBounds(10, 230, 100, 20);
+        timesInseridos.setBounds(10, 240, 100, 20);
         timesInseridos.setVisible(true);
         this.add(timesInseridos);
        
         this.setVisible(true);
     }
-
-    public void actionPerformed(ActionEvent e) {
-        System.out.println("Pressionou o Botão \"Inserir Time\"");
+    
+    public void atualizaCombo() {
+        comboTime.removeAll();
         
-        Time novoTime = new Time();
-        novoTime.setNome(caixaNomeT.getText());
-        listaDeTimes.add(novoTime.getNome());
-        comboTime.addItem(novoTime.getNome());
+        // for (int i=0; i < listaDeTimes.size(); i++) {
+        comboTime.addItem(listaDeTimes.get(index++).getNome());
+        // }
+    }
+    
+    public void limpar() {
+        caixaNomeT.setText("");
+        caixaSede.setText("");
+        caixaTecnico.setText("");
+        caixaRenda.setText("");
+        caixaGastos.setText("");
+    }
+            
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == inserirTime)
+        {
+            System.out.println("Pressionou o Botão \"Inserir Jogador\"");
 
+            Time novoTime = new Time();
+            
+            novoTime.setNome(caixaNomeT.getText());
+            novoTime.setSede(caixaSede.getText());
+            novoTime.setTecnico(caixaTecnico.getText());
+            novoTime.setRenda(Float.parseFloat(caixaRenda.getText()));
+            novoTime.setGastos(Float.parseFloat(caixaGastos.getText()));
 
-        // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            listaDeTimes.add(novoTime);
+            atualizaCombo();
+            
+            limpar();
+        } else if (e.getSource() == comboTime) {
+            if (comboTime.getSelectedIndex() > 0)
+            {
+                caixaNomeT.setText(listaDeTimes.get(comboTime.getSelectedIndex()-1).getNome());
+                caixaSede.setText(listaDeTimes.get(comboTime.getSelectedIndex()-1).getSede());
+                caixaTecnico.setText(listaDeTimes.get(comboTime.getSelectedIndex()-1).getTecnico());
+                caixaRenda.setText(Float.toString(listaDeTimes.get(comboTime.getSelectedIndex()-1).getRenda()));
+                caixaGastos.setText(Float.toString(listaDeTimes.get(comboTime.getSelectedIndex()-1).getGastos()));
+            }
+        } else if (e.getSource() == limparCampos) {
+            limpar();
+        }
     }
 }
